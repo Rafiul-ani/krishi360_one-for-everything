@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Request Consultation - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4><i class="fas fa-plus"></i> Request Expert Consultation</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Consultation Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   placeholder="Brief description of your consultation need" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Detailed Description *</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" 
+                                      placeholder="Please provide detailed information about your farming issue, crop problem, or question. Include relevant details like crop type, symptoms, weather conditions, etc." required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Category *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="crop_management">Crop Management</option>
+                                    <option value="pest_disease">Pest & Disease Control</option>
+                                    <option value="soil_fertility">Soil Fertility</option>
+                                    <option value="irrigation">Irrigation & Water Management</option>
+                                    <option value="harvesting">Harvesting & Post-Harvest</option>
+                                    <option value="organic_farming">Organic Farming</option>
+                                    <option value="technology">Agricultural Technology</option>
+                                    <option value="marketing">Marketing & Sales</option>
+                                    <option value="financial">Financial Planning</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="priority" class="form-label">Priority Level *</label>
+                                <select class="form-select" id="priority" name="priority" required>
+                                    <option value="">Select Priority</option>
+                                    <option value="low">Low - General Question</option>
+                                    <option value="medium">Medium - Needs Attention</option>
+                                    <option value="high">High - Urgent Issue</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> Our agricultural experts will review your request and provide detailed guidance. 
+                            Response time typically ranges from 24-48 hours depending on the complexity of your query.
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('farmer.consultations') }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> Submit Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

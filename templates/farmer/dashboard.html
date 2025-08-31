@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card rice-field-bg border-0">
+                <div class="card-body text-center py-5">
+                    <h1 class="display-6 fw-bold text-dark mb-3">
+                        <i class="fas fa-seedling me-3"></i>Welcome, {{ current_user.get_full_name() }}!
+                    </h1>
+                    <p class="lead text-muted">Manage your crops, track orders, and grow your agricultural business</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_crops }}</div>
+                <div class="stat-label">Total Crops</div>
+                <i class="fas fa-seedling fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.active_crops }}</div>
+                <div class="stat-label">Active Listings</div>
+                <i class="fas fa-leaf fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_orders }}</div>
+                <div class="stat-label">Total Orders</div>
+                <i class="fas fa-shopping-cart fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.pending_consultations }}</div>
+                <div class="stat-label">Pending Consultations</div>
+                <i class="fas fa-question-circle fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light-green">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('farmer.add_crop') }}" class="btn btn-success w-100">
+                                <i class="fas fa-plus me-2"></i>Add New Crop
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('farmer.crops') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-list me-2"></i>Manage Crops
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('farmer.orders') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-shopping-cart me-2"></i>View Orders
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('farmer.add_consultation') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-question-circle me-2"></i>Request Consultation
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent Crops -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-light-green d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-seedling me-2"></i>Recent Crops
+                    </h5>
+                    <a href="{{ url_for('farmer.crops') }}" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if crops %}
+                        <div class="list-group list-group-flush">
+                            {% for crop in crops[:5] %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ crop.name }}</h6>
+                                            <p class="mb-1 text-muted small">{{ crop.variety or 'Standard variety' }}</p>
+                                            <small class="text-muted">
+                                                {{ crop.quantity_available }} {{ crop.unit }} available
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-{{ 'success' if crop.is_active else 'secondary' }}">
+                                                {{ 'Active' if crop.is_active else 'Inactive' }}
+                                            </span>
+                                            <div class="text-success fw-bold">₹{{ crop.price_per_unit }}/{{ crop.unit }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-seedling fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No crops listed yet</p>
+                            <a href="{{ url_for('farmer.add_crop') }}" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>Add Your First Crop
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-light-green d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>Recent Orders
+                    </h5>
+                    <a href="{{ url_for('farmer.orders') }}" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                        <div class="list-group list-group-flush">
+                            {% for order in orders[:5] %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">Order #{{ order.order_number }}</h6>
+                                            <p class="mb-1 text-muted small">Buyer: {{ order.buyer.get_full_name() }}</p>
+                                            <small class="text-muted">
+                                                {{ order.created_at.strftime('%B %d, %Y') }}
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-{{ 'warning' if order.status == 'pending' else 'success' if order.status == 'delivered' else 'info' }}">
+                                                {{ order.status.title() }}
+                                            </span>
+                                            <div class="text-success fw-bold">₹{{ order.total_amount }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No orders yet</p>
+                            <p class="small text-muted">Orders will appear here when buyers purchase your crops</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Consultations -->
+    {% if consultations %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light-green d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Recent Consultations
+                    </h5>
+                    <a href="{{ url_for('farmer.consultations') }}" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for consultation in consultations[:3] %}
+                            <div class="col-md-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ consultation.title }}</h6>
+                                        <p class="card-text small text-muted">{{ consultation.description[:100] }}...</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="badge bg-{{ 'warning' if consultation.status == 'pending' else 'success' if consultation.status == 'completed' else 'info' }}">
+                                                {{ consultation.status.title() }}
+                                            </span>
+                                            <small class="text-muted">{{ consultation.created_at.strftime('%b %d') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

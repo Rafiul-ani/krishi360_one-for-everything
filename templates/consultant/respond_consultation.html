@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Respond to Consultation - {{ consultation.title }} - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-reply"></i> Respond to Consultation</h2>
+                <a href="{{ url_for('consultant.consultation_details', consultation_id=consultation.id) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Details
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-question-circle"></i> Consultation Request</h5>
+                </div>
+                <div class="card-body">
+                    <h4>{{ consultation.title }}</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Category:</strong> {{ consultation.category.title() }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Priority:</strong> 
+                            <span class="badge 
+                                {% if consultation.priority == 'high' %}bg-danger
+                                {% elif consultation.priority == 'medium' %}bg-warning
+                                {% else %}bg-success{% endif %}">
+                                {{ consultation.priority.title() }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Description:</strong>
+                        <p class="mt-2">{{ consultation.description }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Farmer:</strong> {{ consultation.farmer.first_name }} {{ consultation.farmer.last_name }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-reply"></i> Your Response</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="response" class="form-label">Consultation Response *</label>
+                            <textarea class="form-control" id="response" name="response" rows="10" 
+                                      placeholder="Provide detailed, actionable advice to help the farmer with their agricultural issue. Include specific recommendations, best practices, and any relevant resources." required>{{ consultation.response or '' }}</textarea>
+                            <div class="form-text">
+                                <strong>Tips for a good response:</strong>
+                                <ul class="mb-0">
+                                    <li>Be specific and actionable</li>
+                                    <li>Consider the farmer's location and conditions</li>
+                                    <li>Provide step-by-step guidance when possible</li>
+                                    <li>Include safety considerations</li>
+                                    <li>Suggest follow-up actions if needed</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> Once you submit your response, the consultation will be marked as completed and the farmer will be notified.
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('consultant.consultation_details', consultation_id=consultation.id) }}" 
+                               class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane"></i> Submit Response
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-user"></i> Farmer Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ consultation.farmer.first_name }} {{ consultation.farmer.last_name }}</p>
+                    <p><strong>Email:</strong> {{ consultation.farmer.email }}</p>
+                    {% if consultation.farmer.phone %}
+                    <p><strong>Phone:</strong> {{ consultation.farmer.phone }}</p>
+                    {% endif %}
+                    {% if consultation.farmer.address %}
+                    <p><strong>Location:</strong> {{ consultation.farmer.address }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-info-circle"></i> Response Guidelines</h5>
+                </div>
+                <div class="card-body">
+                    <div class="small">
+                        <h6>Best Practices:</h6>
+                        <ul class="mb-3">
+                            <li>Address the specific issue raised</li>
+                            <li>Provide practical, implementable solutions</li>
+                            <li>Consider local conditions and resources</li>
+                            <li>Include safety warnings if applicable</li>
+                            <li>Suggest monitoring and follow-up</li>
+                        </ul>
+                        
+                        <h6>Response Quality:</h6>
+                        <ul class="mb-0">
+                            <li>Clear and easy to understand</li>
+                            <li>Well-structured with logical flow</li>
+                            <li>Comprehensive but concise</li>
+                            <li>Professional and respectful tone</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

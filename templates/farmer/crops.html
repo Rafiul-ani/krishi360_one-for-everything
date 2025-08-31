@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}My Crops - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-seedling"></i> My Crops</h2>
+                <a href="{{ url_for('farmer.add_crop') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add New Crop
+                </a>
+            </div>
+
+            {% if crops %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Crop Name</th>
+                            <th>Variety</th>
+                            <th>Price/Unit</th>
+                            <th>Available</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for crop in crops %}
+                        <tr>
+                            <td>
+                                <strong>{{ crop.name }}</strong>
+                                {% if crop.is_organic %}
+                                    <span class="badge bg-success ms-2">Organic</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ crop.variety or 'N/A' }}</td>
+                            <td>৳{{ "%.2f"|format(crop.price_per_unit) }}/{{ crop.unit }}</td>
+                            <td>{{ crop.quantity_available }} {{ crop.unit }}</td>
+                            <td>{{ crop.location }}</td>
+                            <td>
+                                {% if crop.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('farmer.edit_crop', crop_id=crop.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if crop.is_active %}
+                                    <form method="POST" action="{{ url_for('farmer.delete_crop', crop_id=crop.id) }}" 
+                                          class="d-inline" onsubmit="return confirm('Are you sure you want to deactivate this crop?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-seedling fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No crops listed yet</h4>
+                <p class="text-muted">Start by adding your first crop listing to connect with buyers.</p>
+                <a href="{{ url_for('farmer.add_crop') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add Your First Crop
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

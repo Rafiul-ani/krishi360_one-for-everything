@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Krishi360 - Agricultural Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content text-white">
+                    <h1 class="display-4 fw-bold mb-4 fade-in-up">
+                        Welcome to Krishi360
+                    </h1>
+                    <p class="lead mb-4 fade-in-up">
+                        Connecting farmers, buyers, and agricultural experts across Bangladesh for a sustainable future. 
+                        Your one-stop platform for modern agriculture in Bangladesh.
+                    </p>
+                    <div class="hero-buttons fade-in-up">
+                        {% if not current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-3">
+                                <i class="fas fa-user-plus me-2"></i>Get Started
+                            </a>
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
+                        {% else %}
+                            {% if current_user.role == 'farmer' %}
+                                <a href="{{ url_for('farmer.dashboard') }}" class="btn btn-light btn-lg me-3">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                </a>
+                            {% elif current_user.role == 'buyer' %}
+                                <a href="{{ url_for('buyer.browse_crops') }}" class="btn btn-light btn-lg me-3">
+                                    <i class="fas fa-shopping-cart me-2"></i>Browse Crops
+                                </a>
+                            {% elif current_user.role == 'consultant' %}
+                                <a href="{{ url_for('consultant.dashboard') }}" class="btn btn-light btn-lg me-3">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>Dashboard
+                                </a>
+                            {% elif current_user.role == 'admin' %}
+                                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-light btn-lg me-3">
+                                    <i class="fas fa-cogs me-2"></i>Admin Panel
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image text-center">
+                    <i class="fas fa-seedling" style="font-size: 15rem; color: rgba(255,255,255,0.3);"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 rice-field-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold text-dark">Platform Features</h2>
+                <p class="lead text-muted">Everything you need for modern agriculture</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-seedling fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">For Farmers</h5>
+                        <p class="card-text">
+                            List your crops, manage inventory, and connect directly with buyers. 
+                            Get expert consultations for better yields.
+                        </p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>Crop Management</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Direct Sales</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Expert Consultations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-shopping-cart fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">For Buyers</h5>
+                        <p class="card-text">
+                            Browse fresh crops from local farmers, place orders with secure payments, 
+                            and track your deliveries in real-time.
+                        </p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>Fresh Produce</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Secure Payments</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Order Tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-chalkboard-teacher fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">For Consultants</h5>
+                        <p class="card-text">
+                            Share your expertise with farmers, provide consultations, 
+                            and help improve agricultural practices.
+                        </p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success me-2"></i>Expert Advice</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Consultation Management</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Knowledge Sharing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Active Farmers</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Happy Buyers</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Expert Consultants</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Orders Completed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">How It Works</h2>
+                <p class="lead text-muted">Simple steps to get started</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="step-card">
+                    <div class="step-number bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                        1
+                    </div>
+                    <h5>Register & Choose Role</h5>
+                    <p>Sign up as a Farmer, Buyer, Consultant, or Admin and create your profile.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center">
+                <div class="step-card">
+                    <div class="step-number bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                        2
+                    </div>
+                    <h5>Connect & Interact</h5>
+                    <p>Farmers list crops, buyers browse and order, consultants provide expert advice.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center">
+                <div class="step-card">
+                    <div class="step-number bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                        3
+                    </div>
+                    <h5>Grow Together</h5>
+                    <p>Build lasting relationships and contribute to sustainable agriculture.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-success text-white">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold mb-4">Ready to Transform Agriculture?</h2>
+                <p class="lead mb-4">
+                    Join thousands of farmers, buyers, and experts who are already using Krishi360 
+                    to build a more sustainable agricultural future.
+                </p>
+                {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-rocket me-2"></i>Get Started Today
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.step-number {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.step-card {
+    padding: 2rem 1rem;
+}
+
+.feature-icon {
+    margin-bottom: 1.5rem;
+}
+
+.hero-content h1 {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-content p {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+</style>
+{% endblock %}

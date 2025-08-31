@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Crop - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4><i class="fas fa-plus"></i> Add New Crop Listing</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Crop Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="variety" class="form-label">Variety</label>
+                                <input type="text" class="form-control" id="variety" name="variety" placeholder="e.g., Basmati, Hybrid">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" 
+                                      placeholder="Describe your crop, growing conditions, quality, etc."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="price_per_unit" class="form-label">Price per Unit *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="price_per_unit" name="price_per_unit" 
+                                           step="0.01" min="0" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="unit" class="form-label">Unit *</label>
+                                <select class="form-select" id="unit" name="unit" required>
+                                    <option value="">Select Unit</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="quintal">Quintal</option>
+                                    <option value="ton">Ton</option>
+                                    <option value="piece">Piece</option>
+                                    <option value="dozen">Dozen</option>
+                                    <option value="box">Box</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="quantity_available" class="form-label">Quantity Available *</label>
+                                <input type="number" class="form-control" id="quantity_available" name="quantity_available" 
+                                       step="0.01" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="harvest_date" class="form-label">Harvest Date</label>
+                                <input type="date" class="form-control" id="harvest_date" name="harvest_date">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label">Location *</label>
+                                <input type="text" class="form-control" id="location" name="location" 
+                                       placeholder="City, State" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_organic" name="is_organic">
+                                <label class="form-check-label" for="is_organic">
+                                    <i class="fas fa-leaf text-success"></i> Organic/Organic Certified
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('farmer.crops') }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Add Crop
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

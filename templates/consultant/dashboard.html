@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Consultant Dashboard - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card rice-field-bg border-0">
+                <div class="card-body text-center py-5">
+                    <h1 class="display-6 fw-bold text-dark mb-3">
+                        <i class="fas fa-user-md me-3"></i>Welcome, {{ current_user.get_full_name() }}!
+                    </h1>
+                    <p class="lead text-muted">Provide expert agricultural advice and help farmers grow better crops</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_consultations }}</div>
+                <div class="stat-label">Total Consultations</div>
+                <i class="fas fa-comments fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.pending_count }}</div>
+                <div class="stat-label">Pending</div>
+                <i class="fas fa-clock fa-2x text-warning mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.completed_count }}</div>
+                <div class="stat-label">Completed</div>
+                <i class="fas fa-check-circle fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.avg_rating }}/5</div>
+                <div class="stat-label">Average Rating</div>
+                <i class="fas fa-star fa-2x text-warning mt-2"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light-green">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('consultant.available_consultations') }}" class="btn btn-success w-100">
+                                <i class="fas fa-plus me-2"></i>Available Requests
+                                {% if pending_consultations %}
+                                    <span class="badge bg-danger ms-1">{{ pending_consultations|length }}</span>
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('consultant.consultations') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-list me-2"></i>My Consultations
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('consultant.specializations') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-chart-bar me-2"></i>Specializations
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('consultant.profile') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-user me-2"></i>My Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent Consultations -->
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-header bg-light-green d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-comments me-2"></i>Recent Consultations
+                    </h5>
+                    <a href="{{ url_for('consultant.consultations') }}" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if consultations %}
+                        <div class="list-group list-group-flush">
+                            {% for consultation in consultations[:5] %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ consultation.title }}</h6>
+                                            <p class="mb-1 text-muted small">{{ consultation.category.title() }} | {{ consultation.priority.title() }}</p>
+                                            <small class="text-muted">
+                                                {{ consultation.created_at.strftime('%B %d, %Y') }}
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-{{ 'warning' if consultation.status == 'pending' else 'info' if consultation.status == 'in_progress' else 'success' if consultation.status == 'completed' else 'secondary' }}">
+                                                {{ consultation.status.title() }}
+                                            </span>
+                                            {% if consultation.rating %}
+                                                <div class="text-warning">
+                                                    {% for i in range(1, 6) %}
+                                                        {% if i <= consultation.rating %}
+                                                            <i class="fas fa-star"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No consultations yet</p>
+                            <a href="{{ url_for('consultant.available_consultations') }}" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>Find Available Requests
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Consultations -->
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header bg-light-green d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>Available Requests
+                    </h5>
+                    <a href="{{ url_for('consultant.available_consultations') }}" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if pending_consultations %}
+                        <div class="list-group list-group-flush">
+                            {% for consultation in pending_consultations[:3] %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">{{ consultation.title }}</h6>
+                                            <p class="mb-1 text-muted small">{{ consultation.category.title() }}</p>
+                                            <small class="text-muted">
+                                                {{ consultation.created_at.strftime('%B %d, %Y') }}
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-{{ 'danger' if consultation.priority == 'high' else 'warning' if consultation.priority == 'medium' else 'success' }}">
+                                                {{ consultation.priority.title() }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-plus-circle fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No available requests</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips for Consultants -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light-green">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>Tips for Effective Consulting
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-clock text-success fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6>Respond Quickly</h6>
+                                    <p class="small text-muted mb-0">Aim to respond to consultation requests within 24 hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-comment-dots text-success fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6>Provide Detailed Answers</h6>
+                                    <p class="small text-muted mb-0">Give comprehensive, actionable advice to help farmers succeed</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-star text-success fa-2x"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6>Build Your Reputation</h6>
+                                    <p class="small text-muted mb-0">High ratings and completed consultations help you get more requests</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

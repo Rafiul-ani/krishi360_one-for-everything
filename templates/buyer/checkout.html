@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+            <p class="text-muted">Review your order and complete the purchase</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-shipping-fast"></i> Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="shipping_address" class="form-label">Shipping Address *</label>
+                            <textarea class="form-control" id="shipping_address" name="shipping_address" 
+                                      rows="4" placeholder="Enter your complete shipping address" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label">Payment Method *</label>
+                                                         <select class="form-select" id="payment_method" name="payment_method" required>
+                                 <option value="">Select Payment Method</option>
+                                 <option value="cash_on_delivery">Cash on Delivery</option>
+                                 <option value="bkash">bKash</option>
+                                 <option value="nagad">Nagad</option>
+                                 <option value="rocket">Rocket</option>
+                                 <option value="bank_transfer">Bank Transfer</option>
+                                 <option value="card">Credit/Debit Card</option>
+                             </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Order Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                      placeholder="Any special instructions for your order (optional)"></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('buyer.cart') }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Back to Cart
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check"></i> Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-list"></i> Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in cart_items %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <div>
+                            <strong>{{ item.crop.name }}</strong><br>
+                            <small class="text-muted">{{ item.quantity }} {{ item.crop.unit }}</small>
+                        </div>
+                                                 <div class="text-end">
+                             <strong>৳{{ "%.2f"|format(item.total) }}</strong>
+                         </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    
+                                         <div class="d-flex justify-content-between mb-2">
+                         <span>Subtotal:</span>
+                         <span>৳{{ "%.2f"|format(total_amount) }}</span>
+                     </div>
+                     <div class="d-flex justify-content-between mb-2">
+                         <span>Shipping:</span>
+                         <span>৳0.00</span>
+                     </div>
+                     <hr>
+                     <div class="d-flex justify-content-between">
+                         <strong>Total:</strong>
+                         <strong>৳{{ "%.2f"|format(total_amount) }}</strong>
+                     </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-info-circle"></i> Order Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Total Items:</strong> {{ cart_items|length }}</p>
+                    <p><strong>Estimated Delivery:</strong> 3-5 business days</p>
+                    <p><strong>Payment:</strong> As selected during checkout</p>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Note:</strong> You will receive an order confirmation email once your order is placed.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

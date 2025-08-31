@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}{{ crop.name }} - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4><i class="fas fa-seedling"></i> {{ crop.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Crop Information</h6>
+                            <p><strong>Name:</strong> {{ crop.name }}</p>
+                            {% if crop.variety %}
+                            <p><strong>Variety:</strong> {{ crop.variety }}</p>
+                            {% endif %}
+                                                         <p><strong>Price:</strong> ৳{{ "%.2f"|format(crop.price_per_unit) }} per {{ crop.unit }}</p>
+                            <p><strong>Available Quantity:</strong> {{ crop.quantity_available }} {{ crop.unit }}</p>
+                            <p><strong>Location:</strong> {{ crop.location }}</p>
+                            {% if crop.harvest_date %}
+                            <p><strong>Harvest Date:</strong> {{ crop.harvest_date.strftime('%d %B %Y') }}</p>
+                            {% endif %}
+                            <p><strong>Organic:</strong> 
+                                {% if crop.is_organic %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">No</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Farmer Information</h6>
+                            <p><strong>Farmer:</strong> {{ crop.farmer.first_name }} {{ crop.farmer.last_name }}</p>
+                            <p><strong>Contact:</strong> {{ crop.farmer.email }}</p>
+                            {% if crop.farmer.phone %}
+                            <p><strong>Phone:</strong> {{ crop.farmer.phone }}</p>
+                            {% endif %}
+                            {% if crop.farmer.address %}
+                            <p><strong>Address:</strong> {{ crop.farmer.address }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if crop.description %}
+                    <hr>
+                    <h6 class="text-muted">Description</h6>
+                    <p>{{ crop.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-shopping-cart"></i> Order This Crop</h5>
+                </div>
+                <div class="card-body">
+                    {% if crop.quantity_available > 0 %}
+                    <form method="POST" action="{{ url_for('buyer.add_to_cart') }}">
+                        <input type="hidden" name="crop_id" value="{{ crop.id }}">
+                        
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity ({{ crop.unit }})</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" 
+                                   value="1" min="0.1" max="{{ crop.quantity_available }}" 
+                                   step="0.1" required>
+                            <div class="form-text">Maximum available: {{ crop.quantity_available }} {{ crop.unit }}</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Price per {{ crop.unit }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text">৳</span>
+                                                                 <input type="text" class="form-control" value="৳{{ "%.2f"|format(crop.price_per_unit) }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                            <a href="{{ url_for('buyer.browse_crops') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Browse
+                            </a>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Out of Stock</strong><br>
+                        This crop is currently not available.
+                    </div>
+                    <a href="{{ url_for('buyer.browse_crops') }}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-arrow-left"></i> Browse Other Crops
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-info-circle"></i> Quick Info</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Listed:</strong> {{ crop.created_at.strftime('%d %B %Y') }}</p>
+                    <p><strong>Last Updated:</strong> {{ crop.updated_at.strftime('%d %B %Y') }}</p>
+                    <p><strong>Status:</strong> 
+                        {% if crop.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

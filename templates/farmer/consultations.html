@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}My Consultations - Krishi360{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-comments"></i> My Consultations</h2>
+                <a href="{{ url_for('farmer.add_consultation') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Request Consultation
+                </a>
+            </div>
+
+            {% if consultations %}
+            <div class="row">
+                {% for consultation in consultations %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">{{ consultation.title }}</h5>
+                            <span class="badge 
+                                {% if consultation.status == 'pending' %}bg-warning
+                                {% elif consultation.status == 'in_progress' %}bg-info
+                                {% elif consultation.status == 'completed' %}bg-success
+                                {% else %}bg-secondary{% endif %}">
+                                {{ consultation.status.title() }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ consultation.description[:150] }}{% if consultation.description|length > 150 %}...{% endif %}</p>
+                            
+                            <div class="row text-muted small mb-3">
+                                <div class="col-6">
+                                    <strong>Category:</strong> {{ consultation.category.title() }}
+                                </div>
+                                <div class="col-6">
+                                    <strong>Priority:</strong> 
+                                    <span class="badge 
+                                        {% if consultation.priority == 'high' %}bg-danger
+                                        {% elif consultation.priority == 'medium' %}bg-warning
+                                        {% else %}bg-success{% endif %}">
+                                        {{ consultation.priority.title() }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {% if consultation.consultant %}
+                            <div class="mb-3">
+                                <strong>Consultant:</strong> {{ consultation.consultant.first_name }} {{ consultation.consultant.last_name }}
+                            </div>
+                            {% endif %}
+
+                            {% if consultation.response %}
+                            <div class="alert alert-info">
+                                <strong>Response:</strong> {{ consultation.response }}
+                            </div>
+                            {% endif %}
+
+                            {% if consultation.status == 'completed' and consultation.rating %}
+                            <div class="mb-3">
+                                <strong>Your Rating:</strong>
+                                {% for i in range(1, 6) %}
+                                    {% if i <= consultation.rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer text-muted">
+                            <small>
+                                <i class="fas fa-calendar"></i> {{ consultation.created_at.strftime('%d %b %Y') }}
+                                {% if consultation.updated_at != consultation.created_at %}
+                                    | <i class="fas fa-edit"></i> Updated: {{ consultation.updated_at.strftime('%d %b %Y') }}
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No consultation requests yet</h4>
+                <p class="text-muted">Get expert advice on farming, crop management, and agricultural practices.</p>
+                <a href="{{ url_for('farmer.add_consultation') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Request Your First Consultation
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
